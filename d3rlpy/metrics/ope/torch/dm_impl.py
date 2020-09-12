@@ -6,13 +6,15 @@ from d3rlpy.algos.torch.utility import torch_api, train_api
 
 class DMImpl(TorchImplBase):
     def __init__(self, observation_shape, action_size, learning_rate,
-                 n_ensembles, eps, use_batch_norm, discrete_action, use_gpu,
-                 scaler, augmentation, encoder_params):
+                 n_ensembles, eps, weight_decay, use_batch_norm,
+                 discrete_action, use_gpu, scaler, augmentation,
+                 encoder_params):
         self.observation_shape = observation_shape
         self.action_size = action_size
         self.learning_rate = learning_rate
         self.n_ensembles = n_ensembles
         self.eps = eps
+        self.weight_decay = weight_decay
         self.use_batch_norm = use_batch_norm
         self.discrete_action = discrete_action
         self.use_gpu = use_gpu
@@ -42,7 +44,8 @@ class DMImpl(TorchImplBase):
     def _build_estimator_optim(self):
         self.estimator_optim = Adam(self.estimator.parameters(),
                                     self.learning_rate,
-                                    eps=self.eps)
+                                    eps=self.eps,
+                                    weight_decay=self.weight_decay)
 
     def _predict(self, x, action):
         reward = self.estimator(x, action)

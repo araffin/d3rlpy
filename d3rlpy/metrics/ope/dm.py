@@ -12,6 +12,7 @@ class DM(OPEBase):
                  n_frames=1,
                  learning_rate=1e-3,
                  eps=1e-8,
+                 weight_decay=1e-4,
                  n_ensembles=1,
                  use_batch_norm=False,
                  discrete_action=False,
@@ -25,6 +26,7 @@ class DM(OPEBase):
                          use_gpu)
         self.learning_rate = learning_rate
         self.eps = eps
+        self.weight_decay = weight_decay
         self.n_ensembles = n_ensembles
         self.use_batch_norm = use_batch_norm
         self.discrete_action = discrete_action
@@ -37,6 +39,7 @@ class DM(OPEBase):
                            learning_rate=self.learning_rate,
                            n_ensembles=self.n_ensembles,
                            eps=self.eps,
+                           weight_decay=self.weight_decay,
                            use_batch_norm=self.use_batch_norm,
                            discrete_action=self.discrete_action,
                            use_gpu=self.use_gpu,
