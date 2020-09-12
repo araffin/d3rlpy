@@ -54,7 +54,7 @@ class DM(OPEBase):
 
     def update(self, epoch, total_step, batch):
         loss = self.impl.update_estimator(batch.observations, batch.actions,
-                                          batch.rewards)
+                                          batch.next_rewards)
         return (loss, )
 
     def _get_loss_labels(self):
