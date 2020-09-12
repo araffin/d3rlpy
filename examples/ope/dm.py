@@ -5,7 +5,7 @@ from d3rlpy.metrics.scorer import ope_reward_prediction_error_scorer
 from d3rlpy.metrics.scorer import evaluate_on_environment
 from sklearn.model_selection import train_test_split
 
-dataset, env = get_pybullet('HopperBulletEnv-v0')
+dataset, env = get_pybullet('hopper-bullet-mixed-v0')
 
 train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)
 
