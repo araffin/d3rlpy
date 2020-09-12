@@ -15,6 +15,7 @@ from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.metrics.scorer import dynamics_observation_prediction_error_scorer
 from d3rlpy.metrics.scorer import dynamics_reward_prediction_error_scorer
 from d3rlpy.metrics.scorer import dynamics_prediction_variance_scorer
+from d3rlpy.metrics.scorer import ope_reward_prediction_error_scorer
 from d3rlpy.dataset import Episode, TransitionMiniBatch
 
 
@@ -392,3 +393,40 @@ def test_dynamics_prediction_variance_scorer(observation_shape, action_size,
         total_variances += var.tolist()
     score = dynamics_prediction_variance_scorer(dynamics, episodes)
     assert np.allclose(score, -np.mean(total_variances))
+
+
+class DummyOPE:
+    def __init__(self):
+        self.n_frames = 1
+
+    def predict(self, x, action):
+        reward = np.sum(x, axis=1).reshape((-1, 1))
+        log_prob = np.mean(x, axis=1).reshape((-1, 1))
+        return reward, log_prob
+
+
+@pytest.mark.parametrize('observation_shape', [(100, )])
+@pytest.mark.parametrize('action_size', [2])
+@pytest.mark.parametrize('n_episodes', [100])
+@pytest.mark.parametrize('episode_length', [10])
+def test_ope_reward_prediction_error_scorer(observation_shape, action_size,
+                                            n_episodes, episode_length):
+    episodes = []
+    for _ in range(n_episodes):
+        observations = np.random.random((episode_length, ) + observation_shape)
+        actions = np.random.random((episode_length, action_size))
+        rewards = np.random.random((episode_length, 1))
+        episode = Episode(observation_shape, action_size, observations,
+                          actions, rewards)
+        episodes.append(episode)
+
+    ope = DummyOPE()
+
+    total_errors = []
+    for episode in episodes:
+        batch = TransitionMiniBatch(episode.transitions)
+        pred_reward, _ = ope.predict(batch.observations, batch.actions)
+        errors = ((batch.next_rewards - pred_reward)**2).reshape(-1)
+        total_errors += errors.tolist()
+    score = ope_reward_prediction_error_scorer(ope, episodes)
+    assert np.allclose(score, -np.mean(total_errors))

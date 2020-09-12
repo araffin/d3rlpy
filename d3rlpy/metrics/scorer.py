@@ -413,6 +413,38 @@ def dynamics_prediction_variance_scorer(dynamics, episodes, window_size=1024):
     return -np.mean(total_variances)
 
 
+def ope_reward_prediction_error_scorer(ope, episodes, window_size=1024):
+    """ Returns MSE of reward prediction (in negative scale).
+
+    This metrics suggests how the reward estimator in off-policy evaluation is
+    generalized to test sets.
+    If the MSE is large, the reward estimator is overfitting.
+
+    .. math::
+
+        \\mathbb{E}_{s_t, a_t, r_{t+1} \\sim D} [(r_{t+1} - r')^2]
+
+    where :math:`r' \\sim \\mu(s_t, a_t)`.
+
+    Args:
+        ope (d3rlpy.metrics.ope.base.OPEBase): ope object.
+        episodes (list(d3rlpy.dataset.Episode)): list of episodes.
+        window_size (int): mini-batch size to compute.
+
+    Returns:
+        float: negative mean squared error.
+
+    """
+    total_errors = []
+    for episode in episodes:
+        for batch in _make_batches(episode, window_size, ope.n_frames):
+            pred, _ = ope.predict(batch.observations, batch.actions)
+            errors = ((batch.next_rewards.reshape(-1) - pred.reshape(-1))**2)
+            total_errors += errors.tolist()
+    # smaller is better
+    return -np.mean(total_errors)
+
+
 NEGATED_SCORER = [
     td_error_scorer,
     value_estimation_std_scorer,
@@ -422,4 +454,5 @@ NEGATED_SCORER = [
     dynamics_observation_prediction_error_scorer,
     dynamics_reward_prediction_error_scorer,
     dynamics_prediction_variance_scorer,
+    ope_reward_prediction_error_scorer,
 ]
