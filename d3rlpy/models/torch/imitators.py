@@ -122,8 +122,7 @@ class DeterministicRegressor(nn.Module):
 
     def forward(self, x):
         h = self.encoder(x)
-        h = self.fc(h)
-        return torch.tanh(h)
+        return self.fc(h)
 
     def compute_error(self, x, action):
         return F.mse_loss(self.forward(x), action)
