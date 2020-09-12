@@ -3,7 +3,8 @@ import torch
 
 from d3rlpy.algos.torch.bear_impl import BEARImpl
 from d3rlpy.augmentation import AugmentationPipeline
-from tests.algos.algo_test import torch_impl_tester, DummyScaler
+from tests.base_test import DummyScaler
+from tests.algos.algo_test import torch_impl_tester
 
 
 @pytest.mark.parametrize('observation_shape', [(100, ), (1, 48, 48)])

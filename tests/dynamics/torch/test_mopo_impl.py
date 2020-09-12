@@ -1,7 +1,7 @@
 import pytest
 
 from d3rlpy.dynamics.torch.mopo_impl import MOPOImpl
-from tests.algos.algo_test import DummyScaler
+from tests.base_test import DummyScaler
 from tests.dynamics.dynamics_test import torch_impl_tester
 
 

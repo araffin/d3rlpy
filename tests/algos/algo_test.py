@@ -8,7 +8,6 @@ from unittest.mock import Mock
 from tests.base_test import base_tester, base_update_tester
 from d3rlpy.algos.torch.base import TorchImplBase
 from d3rlpy.datasets import get_cartpole, get_pendulum
-from d3rlpy.preprocessing import Scaler
 
 
 class DummyImpl(TorchImplBase):
@@ -36,23 +35,6 @@ class DummyImpl(TorchImplBase):
 
     def sample_action(self, x):
         pass
-
-
-class DummyScaler(Scaler):
-    def fit(self, episodes):
-        pass
-
-    def transform(self, x):
-        return 0.1 * x
-
-    def reverse_transform(self, x):
-        return 10.0 * x
-
-    def get_type(self):
-        return 'dummy'
-
-    def get_params(self):
-        return {}
 
 
 def algo_tester(algo,

@@ -4,6 +4,24 @@ import os
 from unittest.mock import Mock
 from d3rlpy.dataset import MDPDataset, Transition, TransitionMiniBatch
 from d3rlpy.logger import D3RLPyLogger
+from d3rlpy.preprocessing import Scaler
+
+
+class DummyScaler(Scaler):
+    def fit(self, episodes):
+        pass
+
+    def transform(self, x):
+        return 0.1 * x
+
+    def reverse_transform(self, x):
+        return 10.0 * x
+
+    def get_type(self):
+        return 'dummy'
+
+    def get_params(self):
+        return {}
 
 
 def base_tester(model, impl, observation_shape, action_size=2):

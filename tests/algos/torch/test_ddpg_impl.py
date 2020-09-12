@@ -2,7 +2,8 @@ import pytest
 
 from d3rlpy.algos.torch.ddpg_impl import DDPGImpl
 from d3rlpy.augmentation import AugmentationPipeline
-from tests.algos.algo_test import torch_impl_tester, DummyScaler
+from tests.base_test import DummyScaler
+from tests.algos.algo_test import torch_impl_tester
 
 
 @pytest.mark.parametrize('observation_shape', [(100, ), (4, 84, 84)])
